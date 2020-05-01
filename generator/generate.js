@@ -360,6 +360,7 @@ ${generateFragments(name, primitiveFields, nonPrimitiveFields)}
     const primitiveFields = []
     const nonPrimitiveFields = []
     const refs = []
+    const context = {};
 
     let modelProperties = ""
     if (type.fields) {
@@ -400,7 +401,14 @@ ${generateFragments(name, primitiveFields, nonPrimitiveFields)}
       switch (fieldType.kind) {
         case "SCALAR":
           primitiveFields.push(fieldName)
-          const primitiveType = primitiveToMstType(fieldType.name)
+          let primitiveType = primitiveToMstType(fieldType.name)
+          if(primitiveType === "identitifer") {
+            if(context.identifierDone) {
+              primitiveType = "string";
+            } else {
+              context.identiferDone = true;
+            }
+          }
           return result(
             `types.${primitiveType}`,
             primitiveType === "identifier"
